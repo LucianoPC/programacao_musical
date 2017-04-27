@@ -8,10 +8,16 @@ float GetNoteDuration ();
 
 
 vector<short> note_pitchs = { 60, 62, 64, 65, 67, 69, 71 };
-vector<short> pitchs_change = { 16, 13, 13, 24, 24, 7, 3 };
+vector<short> pitchs_chance = { 0, 35, 10, 5, 10, 5, 35 };
+// vector<short> pitchs_chance = { 16, 13, 13, 24, 24, 7, 3 };
 
-vector<float> note_durations = { 1, 0.75, 0.5, 0.25 };
-// vector<float> durations_change = {  };
+vector<float> note_durations = { 1, 0.5, 0.25 };
+vector<float> durations_chance = { 20, 30, 50 };
+
+float bpm = 40;
+
+// vector<float> note_durations = { 1, 0.75, 0.5, 0.25 };
+// vector<float> durations_chance = { 25, 25, 25, 25 };
 
 
 int main()
@@ -21,7 +27,7 @@ int main()
     MuNote note;
     MuMaterial material;
 
-    note.SetInstr(1);
+    note.SetInstr(2);
     note.SetAmp(0.75);
 
     unsigned int note_index = 0;
@@ -51,9 +57,9 @@ unsigned int GetNextNoteIndex (unsigned int current_note_index)
     short value = 0;
     short random_value = rand() % 100;
 
-    for (unsigned int index = 0; index < pitchs_change.size(); index++)
+    for (unsigned int index = 0; index < pitchs_chance.size(); index++)
     {
-        value += pitchs_change[index];
+        value += pitchs_chance[index];
 
         if (random_value < value) {
             short next_note_index = current_note_index + index;
@@ -62,12 +68,20 @@ unsigned int GetNextNoteIndex (unsigned int current_note_index)
             return next_note_index;
         }
     }
-    return pitchs_change[0];
+    return pitchs_chance[0];
 }
 
 float GetNoteDuration ()
 {
-    unsigned int index = rand() % note_durations.size();
+    short value = 0;
+    short random_value = rand() % 100;
 
-    return note_durations[index] * 0.5;
+    for (unsigned int index = 0; index < durations_chance.size(); index++)
+    {
+        value += durations_chance[index];
+
+        if (random_value < value) {
+            return note_durations[index] * 60.0 / bpm;
+        }
+    }
 }
