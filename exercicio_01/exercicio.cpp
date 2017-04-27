@@ -7,7 +7,7 @@ unsigned int GetNextNoteIndex (unsigned int current_note_index);
 
 
 vector<short> note_values = { 60, 62, 64, 65, 67, 69, 71 };
-vector<short> note_chance = { 15, 15, 30, 30, 7, 3 };
+vector<short> note_chance = { 16, 13, 13, 24, 24, 7, 3 };
 
 
 int main()
