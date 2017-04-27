@@ -4,10 +4,14 @@
 using namespace std;
 
 unsigned int GetNextNoteIndex (unsigned int current_note_index);
+float GetNoteDuration ();
 
 
-vector<short> note_values = { 60, 62, 64, 65, 67, 69, 71 };
-vector<short> note_chance = { 16, 13, 13, 24, 24, 7, 3 };
+vector<short> note_pitchs = { 60, 62, 64, 65, 67, 69, 71 };
+vector<short> pitchs_change = { 16, 13, 13, 24, 24, 7, 3 };
+
+vector<float> note_durations = { 1, 0.75, 0.5, 0.25 };
+// vector<float> durations_change = {  };
 
 
 int main()
@@ -18,17 +22,20 @@ int main()
     MuMaterial material;
 
     note.SetInstr(1);
-    note.SetDur(0.5);
     note.SetAmp(0.75);
 
     unsigned int note_index = 0;
-    note.SetPitch(note_values[note_index]);
+    float note_duration = GetNoteDuration();
+    note.SetPitch(note_pitchs[note_index]);
+    note.SetDur(note_duration);
     material += note;
 
-    for (unsigned int index = 0; index < 20; index++)
+    for (unsigned int index = 0; index < 50; index++)
     {
         note_index = GetNextNoteIndex(note_index);
-        note.SetPitch(note_values[note_index]);
+        note_duration = GetNoteDuration();
+        note.SetPitch(note_pitchs[note_index]);
+        note.SetDur(note_duration);
         material += note;
     }
 
@@ -44,16 +51,23 @@ unsigned int GetNextNoteIndex (unsigned int current_note_index)
     short value = 0;
     short random_value = rand() % 100;
 
-    for (int index = 0; index < note_chance.size(); index++)
+    for (unsigned int index = 0; index < pitchs_change.size(); index++)
     {
-        value += note_chance[index];
+        value += pitchs_change[index];
 
         if (random_value < value) {
             short next_note_index = current_note_index + index;
-            next_note_index = next_note_index % note_values.size();
+            next_note_index = next_note_index % note_pitchs.size();
 
             return next_note_index;
         }
     }
-    return note_chance[0];
+    return pitchs_change[0];
+}
+
+float GetNoteDuration ()
+{
+    unsigned int index = rand() % note_durations.size();
+
+    return note_durations[index] * 0.5;
 }
