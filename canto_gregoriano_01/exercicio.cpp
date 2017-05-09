@@ -3,7 +3,7 @@
 
 using namespace std;
 
-vector<short> note_pitchs = { 59, 60, 62, 64, 65, 67, 69, 71 };
+vector<short> note_pitchs = { 57, 59, 60, 62, 64, 65, 67, 69, 71 };
 
 vector<float> note_durations = { 1, 0.5 };
 
@@ -19,7 +19,7 @@ int main()
     note.SetInstr(3);
     note.SetAmp(0.75);
 
-    unsigned int current_note_index = 2;
+    unsigned int current_note_index = 4;
     float note_duration = note_durations[1] * 60.0 / bpm;
     float direction = rand() % 2 == 0 ? 1 : -1;
 
