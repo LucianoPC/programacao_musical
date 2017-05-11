@@ -22,7 +22,7 @@ int main()
 
     MuMaterial material;
 
-    unsigned int number_of_notes = (rand() % 4) + 3;
+    unsigned int number_of_notes = (rand() % 4) + 5;
     MuMaterial melody_material = NewMelody(number_of_notes);
 
     MuMaterial motive = NewMotive(melody_material);
@@ -30,7 +30,7 @@ int main()
 
     material += melody_material;
 
-    unsigned int number_of_motives = (rand() % 5) + 3;
+    unsigned int number_of_motives = (rand() % 2) + 2;
     for(unsigned int index = 0; index < number_of_motives; index++)
     {
         motive = NewMotive(melody_material, motive);
@@ -72,46 +72,46 @@ MuMaterial NewMotive (MuMaterial material_original,
 
 MuMaterial NewMotive (MuMaterial material)
 {
-    int random_value = rand() % 100;
-    vector<int> options = { 0, 1, 2, 3, 4 };
-    vector<int> option_chances = { 5, 40, 10, 15, 30 };
+    vector<int> options = { 0, 1, 2, 3, 4, 5 };
+    vector<int> option_chances = { 5, 60, 15, 15, 30, 50 };
 
-    int chance = 0;
     MuMaterial motive = material;
 
     for (unsigned int index = 0; index < options.size(); index++)
     {
-        chance += option_chances[index];
+        int random_value = rand() % 100;
+        int chance = option_chances[index];
 
-        if (random_value <= chance) {
-            unsigned int operations = (rand() % 5) + 1;
+        if (random_value < chance) {
             if(options[index] == 1)
             {
+                unsigned int operations = (rand() % 5) + 1;
                 for (int i = 0; i < operations; i++)
                 {
                     cout << "Invert" << endl;
                     motive.Invert();
                 }
-            } else if(options[index] == 2) {
-                for (int i = 0; i < operations; i++)
-                {
-                    cout << "Retro" << endl;
-                    motive.Retro();
-                }
-            } else if(options[index] == 3) {
-                for (int i = 0; i < operations; i++)
-                {
-                    cout << "ExpandInterval" << endl;
-                    motive.ExpandInterval(Between(1, 3));
-                }
-            } else if(options[index] == 4) {
-                for (int i = 0; i < operations; i++)
-                {
-                    cout << "CyclePitch" << endl;
-                    motive.CyclePitch(0, Between(1, 2));
-                }
             }
-            break;
+            else if(options[index] == 2)
+            {
+                motive.Retro();
+            }
+            else if(options[index] == 3)
+            {
+                cout << "ExpandInterval" << endl;
+                motive.ExpandInterval(Between(1, 3));
+            }
+            else if(options[index] == 4)
+            {
+                cout << "CyclePitch" << endl;
+                motive.CyclePitch(0, Between(1, 2));
+            }
+            else if(options[index] == 5)
+            {
+                cout << "DiatonicTranspose" << endl;
+                unsigned int transpose = (rand() % 5) + 1;
+                motive.DiatonicTranspose(0,MAJOR_MODE,transpose,ASCENDING);
+            }
         }
     }
 
@@ -124,11 +124,7 @@ MuMaterial NewMelody (unsigned int number_of_notes)
     MuNote note = CreateNote();
 
     note.SetPitch(60);
-    note.SetDur(1.0 * 60.0 / BPM);
-
-    if(rand() % 100 < 40) {
-        note.SetDur(GetNoteDuration());
-    }
+    note.SetDur(GetNoteDuration());
     // note.SetDur(0.5 * 60.0 / BPM);
 
     melody_material += note;
@@ -159,7 +155,8 @@ int GetNotePitch ()
 {
     int random_value = rand() % 100;
     vector<short> note_pitchs = { 60, 62, 64, 65, 67, 69, 71 };
-    vector<int> note_pitchs_chances = { 20, 10, 10, 20, 20, 10, 10 };
+    vector<int> note_pitchs_chances = { 25, 10, 15, 20, 20, 5, 5 };
+    // vector<int> note_pitchs_chances = { 20, 10, 10, 20, 20, 10, 10 };
 
     int pitch_chance = 0;
 
@@ -178,9 +175,8 @@ int GetNotePitch ()
 float GetNoteDuration ()
 {
     int random_value = rand() % 100;
-    vector<float> note_durations = { 1, 0.5, 0.25 };
-    vector<int> note_duration_chances = { 10, 80, 10 };
-    // vector<int> note_duration_chances = { 20, 45, 35 };
+    vector<float> note_durations = { 1.5, 1.25, 1, 0.75, 0.5, 0.25 };
+    vector<int> note_duration_chances = { 22, 10, 22, 10, 26, 10 };
 
     int duration_chance = 0;
 
