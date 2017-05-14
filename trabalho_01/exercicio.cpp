@@ -23,6 +23,12 @@ int main()
     return 0;
 }
 
+MuMaterial ChangeMelodyBlock (MuMaterial melody_material)
+{
+    MuMaterial material = melody_material;
+
+}
+
 MuMaterial NewMelody (unsigned int number_of_notes)
 {
     MuMaterial melody_material;
