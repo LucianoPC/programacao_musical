@@ -27,3 +27,13 @@
 *.exe
 *.out
 *.app
+
+# CSound
+*.orc
+*.sco
+
+# Sound
+*.wav
+
+# Binary Files
+prog
