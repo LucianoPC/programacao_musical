@@ -3,6 +3,10 @@
 
 using namespace std;
 
+MuMaterial InvertMelody (MuMaterial material, long first_note_number,
+                         long last_note_number);
+MuMaterial GetMaterialNoteBlock (MuMaterial material, long first_note_number,
+                                 long last_note_number);
 MuMaterial RemoveNotesFromMelody (MuMaterial material_melody,
                                   float chance_of_remove_note);
 
@@ -10,7 +14,7 @@ MuMaterial NewMelody (unsigned int number_of_notes);
 int GetNotePitch ();
 float GetNoteDuration ();
 
-const float BPM = 120.0;
+const float BPM = 240.0;
 
 int main()
 {
@@ -19,12 +23,49 @@ int main()
     unsigned int number_of_notes = Between(4, 8);
     MuMaterial melody_material = NewMelody(number_of_notes);
 
-    MuMaterial material;
-    material += melody_material;
-    material += RemoveNotesFromMelody(melody_material, 0.25f);
+    MuMaterial material, tmp;
+
     material += RemoveNotesFromMelody(melody_material, 0.50f);
+    material += RemoveNotesFromMelody(melody_material, 0.25f);
+
+    material += melody_material;
+    material += InvertMelody(melody_material,
+                             melody_material.NumberOfNotes() / 2,
+                             melody_material.NumberOfNotes() - 1);
+
+    tmp = melody_material;
+    tmp.DiatonicTranspose(0, MAJOR_MODE, 3, ASCENDING);
+    material += tmp;
+    tmp = InvertMelody(melody_material,
+                       melody_material.NumberOfNotes() / 2,
+                       melody_material.NumberOfNotes() - 1);
+    tmp.DiatonicTranspose(0, MAJOR_MODE, 3, ASCENDING);
+    material += tmp;
+
+    tmp = melody_material;
+    tmp.DiatonicTranspose(0, MAJOR_MODE, 5, ASCENDING);
+    material += tmp;
+    tmp = InvertMelody(melody_material,
+                       melody_material.NumberOfNotes() / 2,
+                       melody_material.NumberOfNotes() - 1);
+    tmp.DiatonicTranspose(0, MAJOR_MODE, 5, ASCENDING);
+    material += tmp;
+
+    material += melody_material;
+    material += InvertMelody(melody_material,
+                             melody_material.NumberOfNotes() / 2,
+                             melody_material.NumberOfNotes() - 1);
+
+    material += melody_material;
+    material += InvertMelody(melody_material,
+                             melody_material.NumberOfNotes() / 2,
+                             melody_material.NumberOfNotes() - 1);
+
     material += RemoveNotesFromMelody(melody_material, 0.75f);
     material += RemoveNotesFromMelody(melody_material, 1.0f);
+    material += GetMaterialNoteBlock(melody_material,
+                                     melody_material.NumberOfNotes() - 2,
+                                     melody_material.NumberOfNotes() - 3);
 
 
     material.SetDefaultFunctionTables();
@@ -32,6 +73,41 @@ int main()
     material.Orchestra("./orchestra");
 
     return 0;
+}
+
+MuMaterial InvertMelody (MuMaterial material, long first_note_number,
+                         long last_note_number)
+{
+    MuMaterial first_block_material;
+    if (first_note_number > 0)
+    {
+        first_block_material += GetMaterialNoteBlock(material, 0,
+                                                     first_note_number - 1);
+    }
+
+    MuMaterial inverted_material;
+    inverted_material = GetMaterialNoteBlock(material, first_note_number,
+                                             last_note_number);
+    inverted_material.Invert();
+
+    MuMaterial new_material;
+    new_material += first_block_material;
+    new_material += inverted_material;
+
+    return new_material;
+}
+
+MuMaterial GetMaterialNoteBlock (MuMaterial material, long first_note_number,
+                                 long last_note_number)
+{
+    MuMaterial material_block;
+
+    for (int index = first_note_number; index <= last_note_number; index++)
+    {
+        material_block += material.GetNote(index);
+    }
+
+    return material_block;
 }
 
 MuMaterial RemoveNotesFromMelody (MuMaterial material_melody,
@@ -60,7 +136,7 @@ MuMaterial NewMelody (unsigned int number_of_notes)
 {
     MuMaterial melody_material;
     MuNote note;
-    note.SetInstr(2);
+    note.SetInstr(3);
     note.SetAmp(0.75);
 
     note.SetPitch(60);
@@ -86,8 +162,8 @@ int GetNotePitch ()
 {
     int random_value = rand() % 100;
     vector<short> note_pitchs = { 60, 62, 64, 65, 67, 69, 71 };
-    // vector<int> note_pitchs_chances = { 25, 10, 15, 20, 20, 5, 5 };
-    vector<int> note_pitchs_chances = { 20, 10, 10, 20, 20, 10, 10 };
+    vector<int> note_pitchs_chances = { 25, 10, 15, 20, 20, 5, 5 };
+    // vector<int> note_pitchs_chances = { 20, 10, 10, 20, 20, 10, 10 };
 
     int pitch_chance = 0;
 
@@ -106,8 +182,8 @@ int GetNotePitch ()
 float GetNoteDuration ()
 {
     int random_value = rand() % 100;
-    vector<float> note_durations = { 1.5, 1.25, 1, 0.75, 0.5, 0.25 };
-    vector<int> note_duration_chances = { 22, 10, 22, 10, 26, 10 };
+    vector<float> note_durations = { 1.5, 1.25, 1, 0.75, 0.5 };
+    vector<int> note_duration_chances = { 25, 10, 27, 10, 28};
 
     int duration_chance = 0;
 

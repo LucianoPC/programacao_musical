@@ -37,3 +37,7 @@
 
 # Binary Files
 prog
+
+# Vim files
+*.swp
+*.swo
