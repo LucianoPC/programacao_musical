@@ -3,11 +3,14 @@
 
 using namespace std;
 
+MuMaterial RemoveNotesFromMelody (MuMaterial material_melody,
+                                  float chance_of_remove_note);
+
 MuMaterial NewMelody (unsigned int number_of_notes);
 int GetNotePitch ();
 float GetNoteDuration ();
 
-float BPM = 90.0;
+const float BPM = 120.0;
 
 int main()
 {
@@ -16,17 +19,41 @@ int main()
     unsigned int number_of_notes = Between(4, 8);
     MuMaterial melody_material = NewMelody(number_of_notes);
 
-    melody_material.SetDefaultFunctionTables();
-    melody_material.Score("./score");
-    melody_material.Orchestra("./orchestra");
+    MuMaterial material;
+    material += melody_material;
+    material += RemoveNotesFromMelody(melody_material, 0.25f);
+    material += RemoveNotesFromMelody(melody_material, 0.50f);
+    material += RemoveNotesFromMelody(melody_material, 0.75f);
+    material += RemoveNotesFromMelody(melody_material, 1.0f);
+
+
+    material.SetDefaultFunctionTables();
+    material.Score("./score");
+    material.Orchestra("./orchestra");
 
     return 0;
 }
 
-MuMaterial ChangeMelodyBlock (MuMaterial melody_material)
+MuMaterial RemoveNotesFromMelody (MuMaterial material_melody,
+                                  float chance_of_remove_note)
 {
-    MuMaterial material = melody_material;
+    MuMaterial material;
+    long number_of_notes = material_melody.NumberOfNotes();
 
+    material += material_melody.GetFirstNote();
+
+    for (int index = 1; index < (number_of_notes - 1); index++)
+    {
+        float sorted_number = Between(0.0f, 1.0f);
+        bool use_note = sorted_number > chance_of_remove_note;
+        if (use_note) material += material_melody.GetNote(index);
+    }
+
+    material += material_melody.GetNote(number_of_notes - 1);
+
+    material.Fit(material_melody.Dur());
+
+    return material;
 }
 
 MuMaterial NewMelody (unsigned int number_of_notes)
