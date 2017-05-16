@@ -14,62 +14,21 @@ MuMaterial NewMelody (unsigned int number_of_notes);
 int GetNotePitch ();
 float GetNoteDuration ();
 
-const float BPM = 220.0;
+const float BPM = 120.0;
 
 int main()
 {
     MuInit();
 
-    unsigned int number_of_notes = Between(4, 8);
+    unsigned int number_of_notes = 4;
     MuMaterial melody_material = NewMelody(number_of_notes);
 
     MuMaterial material, tmp;
 
-    material += RemoveNotesFromMelody(melody_material, 0.50f);
-    material += RemoveNotesFromMelody(melody_material, 0.25f);
-
     material += melody_material;
     material += InvertMelody(melody_material,
                              melody_material.NumberOfNotes() / 2,
                              melody_material.NumberOfNotes() - 1);
-
-    tmp = melody_material;
-    tmp.DiatonicTranspose(0, MAJOR_MODE, 3, ASCENDING);
-    material += tmp;
-    tmp = InvertMelody(melody_material,
-                       melody_material.NumberOfNotes() / 2,
-                       melody_material.NumberOfNotes() - 1);
-    tmp.DiatonicTranspose(0, MAJOR_MODE, 3, ASCENDING);
-    material += tmp;
-
-    tmp = melody_material;
-    tmp.DiatonicTranspose(0, MAJOR_MODE, 2, DESCENDING);
-    material += tmp;
-    tmp = InvertMelody(melody_material,
-                       melody_material.NumberOfNotes() / 2,
-                       melody_material.NumberOfNotes() - 1);
-    tmp.DiatonicTranspose(0, MAJOR_MODE, 2, DESCENDING);
-    material += tmp;
-
-    tmp = melody_material;
-    material += tmp;
-    tmp = InvertMelody(melody_material,
-                       melody_material.NumberOfNotes() / 2,
-                       melody_material.NumberOfNotes() - 1);
-    tmp.Retro();
-    material += tmp;
-
-    material += melody_material;
-    material += InvertMelody(melody_material,
-                             melody_material.NumberOfNotes() / 2,
-                             melody_material.NumberOfNotes() - 1);
-
-    material += RemoveNotesFromMelody(melody_material, 0.50f);
-    material += RemoveNotesFromMelody(melody_material, 0.75f);
-    material += GetMaterialNoteBlock(melody_material,
-                                     melody_material.NumberOfNotes() - 2,
-                                     melody_material.NumberOfNotes() - 3);
-
 
     material.SetDefaultFunctionTables();
     material.Score("./score");
@@ -148,7 +107,7 @@ MuMaterial NewMelody (unsigned int number_of_notes)
 
     melody_material += note;
 
-    for (unsigned int index = 0; index < (number_of_notes - 1); index++)
+    for (unsigned int index = 0; index < number_of_notes - 1; index++)
     {
         int note_pitch = GetNotePitch();
         float note_duration = GetNoteDuration();

@@ -25,50 +25,9 @@ int main()
 
     MuMaterial material, tmp;
 
-    material += RemoveNotesFromMelody(melody_material, 0.50f);
+    material += melody_material;
     material += RemoveNotesFromMelody(melody_material, 0.25f);
-
-    material += melody_material;
-    material += InvertMelody(melody_material,
-                             melody_material.NumberOfNotes() / 2,
-                             melody_material.NumberOfNotes() - 1);
-
-    tmp = melody_material;
-    tmp.DiatonicTranspose(0, MAJOR_MODE, 3, ASCENDING);
-    material += tmp;
-    tmp = InvertMelody(melody_material,
-                       melody_material.NumberOfNotes() / 2,
-                       melody_material.NumberOfNotes() - 1);
-    tmp.DiatonicTranspose(0, MAJOR_MODE, 3, ASCENDING);
-    material += tmp;
-
-    tmp = melody_material;
-    tmp.DiatonicTranspose(0, MAJOR_MODE, 2, DESCENDING);
-    material += tmp;
-    tmp = InvertMelody(melody_material,
-                       melody_material.NumberOfNotes() / 2,
-                       melody_material.NumberOfNotes() - 1);
-    tmp.DiatonicTranspose(0, MAJOR_MODE, 2, DESCENDING);
-    material += tmp;
-
-    tmp = melody_material;
-    material += tmp;
-    tmp = InvertMelody(melody_material,
-                       melody_material.NumberOfNotes() / 2,
-                       melody_material.NumberOfNotes() - 1);
-    tmp.Retro();
-    material += tmp;
-
-    material += melody_material;
-    material += InvertMelody(melody_material,
-                             melody_material.NumberOfNotes() / 2,
-                             melody_material.NumberOfNotes() - 1);
-
     material += RemoveNotesFromMelody(melody_material, 0.50f);
-    material += RemoveNotesFromMelody(melody_material, 0.75f);
-    material += GetMaterialNoteBlock(melody_material,
-                                     melody_material.NumberOfNotes() - 2,
-                                     melody_material.NumberOfNotes() - 3);
 
 
     material.SetDefaultFunctionTables();
@@ -187,7 +146,7 @@ float GetNoteDuration ()
 {
     int random_value = rand() % 100;
     vector<float> note_durations = { 1.5, 1.25, 1, 0.75, 0.5 };
-    vector<int> note_duration_chances = { 15, 10, 37, 10, 28};
+    vector<int> note_duration_chances = { 25, 10, 27, 10, 28};
 
     int duration_chance = 0;
 
